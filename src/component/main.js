@@ -74,7 +74,7 @@ async function getSystemInformation() {
 
 async function syncSystemInformationToServer(data) {
     try {
-        const response = await fetch(config.PLATFORM_BACKEND_URL + `client/${config.TUNNEL_CLIENT_ID}`, {
+        const response = await fetch(config.PLATFORM_BACKEND_URL + `api/client/${config.TUNNEL_CLIENT_ID}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': "application/json",
