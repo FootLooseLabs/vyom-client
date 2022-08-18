@@ -1,0 +1,37 @@
+{
+  "name": "tunnel-client-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon --exec babel-node ./src/interface.js",
+    "start": "NODE_ENV=production pm2 start ./src/interface.js --interpreter node_modules/@babel/node/bin/babel-node.js --name $npm_package_name",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "atom": "git+https://github.com/FootLooseLabs/atom.js",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^6.2.0",
+    "express": "^4.17.3",
+    "http-proxy-middleware": "^2.0.6",
+    "kill-port": "^1.6.0",
+    "localtunnel": "^2.0.2",
+    "mongoose": ">3.8.0 <4.20.0",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0",
+    "node-uuid": "^1.4.8",
+    "systeminformation": "^5.12.5",
+    "node-fetch": "^2.6.7"
+  }
+}
