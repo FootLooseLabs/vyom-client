@@ -5,7 +5,7 @@ var devConfig = {
 }
 
 var prodConfig = {
-    PLATFORM_BACKEND_URL: "http://localhost:8888/",
+    PLATFORM_BACKEND_URL: "https://teleport.vyom.cc/",
     TUNNEL_CLIENT_ID: process.env.CLIENT_ID,
     TERMINAL_SERVICE_URL: process.env.TERMINAL_SERVICE_URL
 }
