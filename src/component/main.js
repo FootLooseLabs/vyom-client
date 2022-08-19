@@ -67,7 +67,9 @@ async function setupTunnel({port, clientId}) {
         syncSystemInformationToServer(JSON.stringify({deviceStatus: 'offline'}));
     });
     tunnel.on('request', (info) => {
-        console.log("Tunnel Request Received: ", info);
+        if(info.path !== '/cli/'){
+            console.log("Tunnel Request Received: ", info);
+        }
     })
 }
 
