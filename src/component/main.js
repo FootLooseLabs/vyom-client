@@ -1,7 +1,7 @@
 import "dotenv/config.js";
 import config from "../configs/config";
 import fetch from "node-fetch";
-
+var cors = require('cors');
 const kill = require("kill-port");
 var express = require('express');
 let app = express();
@@ -15,6 +15,12 @@ const HOST = "localhost";
 const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
 let tunnel;
 let refreshIntervalId;
+
+app.use(cors({
+    origin: ['https://teleport.vyom.cc', 'http://localhost:8005'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Set-Cookie', 'set-cookie']
+}));
 
 app.get('/', (req, res, next) => {
     res.send('This is a proxy service for connecting to RPI terminal remotely powered by VYOM.cc');
