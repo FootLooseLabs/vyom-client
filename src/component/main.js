@@ -78,12 +78,12 @@ async function syncSystemInformationToServer(data) {
             method: 'PUT',
             headers: {
                 'Content-Type': "application/json",
-                'x-real-host': 'docs.brahma.ai'
+                'x-real-host': 'teleport.vyom.cc'
             },
             body: data,
             redirect: 'follow'
         })
-        console.log("INFO: syncSystemInformationToServer API response status", response.status)
+        console.log(`${new Date()} INFO: syncSystemInformationToServer API response status`, response.status)
         return response;
     } catch (e) {
         throw e;
@@ -108,5 +108,3 @@ app.__start__ = async (cb) => {
 }
 
 module.exports = app;
-
-//docker run -d --restart always --name localtunnel -p 3000:3000 defunctzombie/localtunnel-server:latest --port 3000
