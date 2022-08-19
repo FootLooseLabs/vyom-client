@@ -5,7 +5,6 @@ import fetch from "node-fetch";
 const kill = require("kill-port");
 var express = require('express');
 let app = express();
-const morgan = require("morgan");
 const {createProxyMiddleware} = require('http-proxy-middleware');
 const localtunnel = require('localtunnel');
 const si = require('systeminformation');
@@ -16,8 +15,6 @@ const HOST = "localhost";
 const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
 let tunnel;
 let refreshIntervalId;
-
-app.use(morgan('debug'));
 
 app.get('/', (req, res, next) => {
     res.send('This is a proxy service for connecting to RPI terminal remotely powered by VYOM.cc');
