@@ -23,6 +23,10 @@ app.get('/', (req, res, next) => {
     res.send('This is a proxy service for connecting to RPI terminal remotely powered by VYOM.cc');
 });
 
+app.get('/health', (req, res, next) => {
+    res.status(200).send("OK");
+})
+
 app.use('/cli', createProxyMiddleware({
     target: TERMINAL_SERVICE_URL,
     changeOrigin: true,
