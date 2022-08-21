@@ -51,7 +51,13 @@ app.use((err, req, res, next) => {
 })
 
 async function setupTunnel({port, clientId}) {
-    tunnel = await localtunnel({port: port, subdomain: clientId, host: 'https://localtunnel.vyom.cc'});
+    console.log("Starting Tunnel...", port, clientId);
+    try {
+        tunnel = await localtunnel({port: port, subdomain: clientId.trim(), host: 'https://localtunnel.vyom.cc'});
+    } catch (e) {
+        console.error("Error:", e);
+        throw e;
+    }
 
     // the assigned public url for your tunnel
     // i.e. https://abcdefgjhij.localtunnel.vyom.cc
@@ -81,7 +87,9 @@ async function getSystemInformation() {
     return await si.getAllData('*', '*');
 }
 
-async function syncSystemInformationToServer(data) {
+async function syncSystemInformationToServer(additionalInfo) {
+    console.log("Syncing System Information to Server...", additionalInfo);
+    var data = {...await getSystemInformation(), ...additionalInfo};
     try {
         const response = await fetch(config.PLATFORM_BACKEND_URL + `api/client/${config.TUNNEL_CLIENT_ID}`, {
             method: 'PUT',
@@ -89,7 +97,7 @@ async function syncSystemInformationToServer(data) {
                 'Content-Type': "application/json",
                 'x-real-host': 'teleport.vyom.cc'
             },
-            body: data,
+            body: JSON.stringify(data),
             redirect: 'follow'
         })
         console.log(`${new Date()} INFO: syncSystemInformationToServer API response status`, response.status)
@@ -102,15 +110,15 @@ async function syncSystemInformationToServer(data) {
 app.__start__ = async (cb) => {
     try {
         kill(PORT).then(() => {
-            app.listen(PORT, HOST, () => {
+            app.listen(PORT, HOST, async () => {
                 console.log(`Starting Proxy at ${HOST}:${PORT}`);
+                console.log("Starting Tunnel...", config);
+                await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
+                refreshIntervalId = setInterval(async () => {
+                    await syncSystemInformationToServer();
+                }, 60000);
             });
         });
-        await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
-        refreshIntervalId = setInterval(async () => {
-            var data = await getSystemInformation();
-            await syncSystemInformationToServer(JSON.stringify(data));
-        }, 60000);
     } catch (e) {
         console.error("Error:", e);
     }
