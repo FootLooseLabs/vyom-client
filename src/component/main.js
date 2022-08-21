@@ -62,18 +62,18 @@ async function setupTunnel({port, clientId}) {
     // the assigned public url for your tunnel
     // i.e. https://abcdefgjhij.localtunnel.vyom.cc
     console.log(`Tunnel URL: ${tunnel.url}`);
-    await syncSystemInformationToServer(JSON.stringify({tunnelUrl: tunnel.url, deviceStatus: 'online'}));
+    await syncSystemInformationToServer({tunnelUrl: tunnel.url, deviceStatus: 'online'});
     tunnel.on('close', () => {
         // tunnels are closed
         console.error("Tunnel closed unexpectedly");
         clearInterval(refreshIntervalId);
-        syncSystemInformationToServer(JSON.stringify({deviceStatus: 'offline'}));
+        syncSystemInformationToServer({deviceStatus: 'offline'});
     });
     tunnel.on('error', (err) => {
         // handle errors
         console.error("Error Occurred in creating tunnel ", err);
         clearInterval(refreshIntervalId);
-        syncSystemInformationToServer(JSON.stringify({deviceStatus: 'offline'}));
+        syncSystemInformationToServer({deviceStatus: 'offline'});
     });
     tunnel.on('request', (info) => {
         if(info.path !== '/cli/'){
@@ -112,7 +112,6 @@ app.__start__ = async (cb) => {
         kill(PORT).then(() => {
             app.listen(PORT, HOST, async () => {
                 console.log(`Starting Proxy at ${HOST}:${PORT}`);
-                console.log("Starting Tunnel...", config);
                 await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
                 refreshIntervalId = setInterval(async () => {
                     await syncSystemInformationToServer();
