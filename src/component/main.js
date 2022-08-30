@@ -13,6 +13,7 @@ const si = require('systeminformation');
 const PORT = 3000;
 const HOST = "localhost";
 const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
+const REQUEST_HANDLER_URL = config.REQUEST_HANDLER_URL
 let tunnel;
 let refreshIntervalId;
 
@@ -38,6 +39,56 @@ app.use('/cli', createProxyMiddleware({
     },
     secure: false
 }));
+
+app.use('/request_credentials',createProxyMiddleware({
+    target: REQUEST_HANDLER_URL,
+    changeOrigin: true,
+    pathRewrite: {
+        [`^/request_credentials`]: '/generateToken',
+    },
+    secure: false,
+    logger: console,
+    onProxyReq(proxyReq, req, res) {
+        if (req.method == 'POST') {
+            if (req.body) delete req.body;
+
+            // Make any needed POST parameter changes
+            let body = new Object();
+
+            body.email = `${config.TUNNEL_CLIENT_ID}@vyom.cc`;
+            body.max_connections = '2';
+            body.role = 'ALL';
+
+            // URI encode JSON object
+            body = Object.keys(body)
+                .map(function (key) {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(body[key]);
+                })
+                .join('&');
+
+            // Update header
+            proxyReq.setHeader('content-type', 'application/x-www-form-urlencoded');
+            proxyReq.setHeader('content-length', body.length);
+
+            // Write out body changes to the proxyReq stream
+            proxyReq.write(body);
+            proxyReq.end();
+        }
+    },
+}));
+
+const wsProxy = createProxyMiddleware({
+    target: `${config.REQUEST_HANDLER_URL}`,
+    changeOrigin: true,
+    secure: false,
+    ws: true,
+    logger: console,
+    pathRewrite: {
+        [`^/web_socket`]: '/wsapi',
+    },
+})
+
+app.use('/web_socket/:client_id', wsProxy)
 
 app.use((err, req, res, next) => {
     console.error("ERROR: ", err.stack);
@@ -110,13 +161,14 @@ async function syncSystemInformationToServer(additionalInfo) {
 app.__start__ = async (cb) => {
     try {
         kill(PORT).then(() => {
-            app.listen(PORT, HOST, async () => {
+            const server = app.listen(PORT, HOST, async () => {
                 console.log(`Starting Proxy at ${HOST}:${PORT}`);
                 await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
                 refreshIntervalId = setInterval(async () => {
                     await syncSystemInformationToServer();
                 }, 60000);
             });
+            server.on('upgrade', wsProxy.upgrade);
         });
     } catch (e) {
         console.error("Error:", e);
