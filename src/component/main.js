@@ -172,11 +172,16 @@ async function syncSystemInformationToServer(additionalInfo) {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 app.__start__ = async (cb) => {
     try {
         kill(PORT).then(() => {
             const server = app.listen(PORT, HOST, async () => {
                 console.log(`Starting Proxy at ${HOST}:${PORT}`);
+                await sleep(5000)
                 await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
                 refreshIntervalId = setInterval(async () => {
                     await syncSystemInformationToServer();
