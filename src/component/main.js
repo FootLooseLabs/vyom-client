@@ -1,13 +1,18 @@
 import "dotenv/config.js";
 import config from "../configs/config";
 import fetch from "node-fetch";
+import dynamicController from "./controllers/runtimeController";
+const path = require('path');
+const actuator = require('express-actuator');
 var cors = require('cors');
 const kill = require("kill-port");
 var express = require('express');
 let app = express();
+var bodyParser = require('body-parser');
 const {createProxyMiddleware} = require('http-proxy-middleware');
 const localtunnel = require('localtunnel');
 const si = require('systeminformation');
+const fs = require('fs');
 
 // Configuration
 const PORT = 3000;
@@ -16,20 +21,19 @@ const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
 const REQUEST_HANDLER_URL = config.REQUEST_HANDLER_URL
 let tunnel;
 let refreshIntervalId;
-
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
 app.use(cors({
     origin: ['https://teleport.vyom.cc', 'http://localhost:8005'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Set-Cookie', 'set-cookie']
 }));
+app.use(actuator({infoBuildOptions: {clientId:config.TUNNEL_CLIENT_ID}}));
 
 app.get('/', (req, res, next) => {
     res.send('This is a proxy service for connecting to RPI terminal remotely powered by VYOM.cc');
 });
-
-app.get('/health', (req, res, next) => {
-    res.status(200).send("OK");
-})
 
 app.use('/cli', createProxyMiddleware({
     target: TERMINAL_SERVICE_URL,
@@ -40,7 +44,7 @@ app.use('/cli', createProxyMiddleware({
     secure: false
 }));
 
-app.use('/request_credentials',createProxyMiddleware({
+app.use('/request_credentials', createProxyMiddleware({
     target: REQUEST_HANDLER_URL,
     changeOrigin: true,
     pathRewrite: {
@@ -101,6 +105,16 @@ app.use((err, req, res, next) => {
     });
 })
 
+app.post('/api/network_config', function (req, res) {
+    console.log("RECEIVED REQUEST TO ADD NETOWRK CONFIG", req.body)
+    var networkConfigs = req.body;
+    let config = JSON.stringify(networkConfigs);
+    fs.writeFileSync(`${path.join(__dirname, '/network','/networkConfigs.json')}`, config);
+    var dynamicController = require('./controllers/RuntimeController');
+    dynamicController.init(app);
+    res.status(200).send();
+});
+
 async function setupTunnel({port, clientId}) {
     console.log("Starting Tunnel...", port, clientId);
     try {
@@ -127,7 +141,7 @@ async function setupTunnel({port, clientId}) {
         syncSystemInformationToServer({deviceStatus: 'offline'});
     });
     tunnel.on('request', (info) => {
-        if(info.path !== '/cli/'){
+        if (info.path !== '/cli/') {
             console.log("Tunnel Request Received: ", info);
         }
     })
@@ -167,6 +181,8 @@ app.__start__ = async (cb) => {
                 refreshIntervalId = setInterval(async () => {
                     await syncSystemInformationToServer();
                 }, 60000);
+                var dynamicController = require('./controllers/RuntimeController');
+                dynamicController.init(app);
             });
             server.on('upgrade', wsProxy.upgrade);
         });

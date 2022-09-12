@@ -8,6 +8,11 @@
     "start": "NODE_ENV=production pm2 start ./src/interface.js --interpreter node_modules/@babel/node/bin/babel-node.js --name $npm_package_name",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "nodemonConfig": {
+    "ignore": [
+      "src/component/network/*"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,14 +29,15 @@
     "crypto": "^1.0.1",
     "dotenv": "^6.2.0",
     "express": "^4.17.3",
+    "express-actuator": "^1.8.2",
     "http-proxy-middleware": "^2.0.6",
     "kill-port": "^1.6.0",
     "localtunnel": "^2.0.2",
     "mongoose": ">3.8.0 <4.20.0",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.10.0",
+    "node-fetch": "^2.6.7",
     "node-uuid": "^1.4.8",
-    "systeminformation": "^5.12.5",
-    "node-fetch": "^2.6.7"
+    "systeminformation": "^5.12.5"
   }
 }
