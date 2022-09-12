@@ -1,7 +1,7 @@
 import "dotenv/config.js";
 import config from "../configs/config";
 import fetch from "node-fetch";
-import dynamicController from "./controllers/runtimeController";
+import dynamicController from "./controllers/RuntimeController";
 const path = require('path');
 const actuator = require('express-actuator');
 var cors = require('cors');
