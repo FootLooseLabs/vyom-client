@@ -115,6 +115,40 @@ app.post('/api/network_config', function (req, res) {
     res.status(200).send();
 });
 
+async function createTunnel(port, subdomain, host='https://localtunnel.vyom.cc'){
+    const tunnel = await localtunnel({
+        port: port,
+        host: host,
+        subdomain: subdomain.trim()
+    }).catch(err => {
+        throw err;
+    });
+
+    tunnel.on('error', err => {
+        console.error("Error Occurred in creating tunnel ", err);
+        clearInterval(refreshIntervalId);
+        syncSystemInformationToServer({deviceStatus: 'offline'});
+        throw err;
+    });
+
+    tunnel.on('request', (info) => {
+        if (info.path !== '/cli/') {
+            console.log("Tunnel Request Received: ", info);
+        }
+    })
+
+    console.log('your url is: %s', tunnel.url);
+    await syncSystemInformationToServer({tunnelUrl: tunnel.url, deviceStatus: 'online'});
+    /**
+     * `cachedUrl` is set when using a proxy server that support resource caching.
+     * This URL generally remains available after the tunnel itself has closed.
+     * @see https://github.com/localtunnel/localtunnel/pull/319#discussion_r319846289
+     */
+    if (tunnel.cachedUrl) {
+        console.log('your cachedUrl is: %s', tunnel.cachedUrl);
+    }
+}
+
 async function setupTunnel({port, clientId}) {
     console.log("Starting Tunnel...", port, clientId);
     try {
@@ -182,7 +216,7 @@ app.__start__ = async (cb) => {
             const server = app.listen(PORT, HOST, async () => {
                 console.log(`Starting Proxy at ${HOST}:${PORT}`);
                 await sleep(5000)
-                await setupTunnel({port: PORT, clientId: `${config.TUNNEL_CLIENT_ID}`});
+                await createTunnel(PORT, `${config.TUNNEL_CLIENT_ID}`);
                 refreshIntervalId = setInterval(async () => {
                     await syncSystemInformationToServer();
                 }, 60000);
