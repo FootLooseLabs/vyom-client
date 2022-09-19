@@ -15,9 +15,10 @@ function createRoute(app) {
             target: `${json[i].secure ? "https" : "http"}://${json[i].targetHost}:${json[i].portNumber}`,
             changeOrigin: true,
             pathRewrite: {
-                [`^/custom${json[i].endpoint}`]: json[i].endpoint,
+                [`^/custom${json[i].endpoint}`]: json[i].isWebsocket ? `${json[i].wsPath}` : `${json[i].endpoint}`,
             },
             secure: json[i].secure,
+            ws: json[i].isWebsocket,
             logger: console
         }));
     }

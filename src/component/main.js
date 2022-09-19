@@ -131,14 +131,18 @@ async function createTunnel(port, subdomain, host='https://localtunnel.vyom.cc')
         throw err;
     });
 
-    tunnel.on('request', (info) => {
-        if (info.path !== '/cli/') {
-            console.log("Tunnel Request Received: ", info);
-        }
-    })
+    // tunnel.on('request', (info) => {
+    //     if (info.path !== '/cli/') {
+    //         console.log("Tunnel Request Received: ", info);
+    //     }
+    // })
 
     console.log('your url is: %s', tunnel.url);
-    await syncSystemInformationToServer({tunnelUrl: tunnel.url, deviceStatus: 'online'});
+    try {
+        await syncSystemInformationToServer({tunnelUrl: tunnel.url, deviceStatus: 'online'});
+    } catch (e) {
+        console.error(e);
+    }
     /**
      * `cachedUrl` is set when using a proxy server that support resource caching.
      * This URL generally remains available after the tunnel itself has closed.
@@ -218,7 +222,11 @@ app.__start__ = async (cb) => {
                 await sleep(5000)
                 await createTunnel(PORT, `${config.TUNNEL_CLIENT_ID}`);
                 refreshIntervalId = setInterval(async () => {
-                    await syncSystemInformationToServer();
+                    try {
+                        await syncSystemInformationToServer();
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }, 60000);
                 var dynamicController = require('./controllers/RuntimeController');
                 dynamicController.init(app);
