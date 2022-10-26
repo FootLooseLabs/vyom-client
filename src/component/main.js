@@ -2,6 +2,7 @@ import "dotenv/config.js";
 import config from "../configs/config";
 import fetch from "node-fetch";
 import dynamicController from "./controllers/RuntimeController";
+
 const path = require('path');
 const actuator = require('express-actuator');
 var cors = require('cors');
@@ -29,7 +30,7 @@ app.use(cors({
     credentials: true,
     allowedHeaders: ['Content-Type', 'Set-Cookie', 'set-cookie']
 }));
-app.use(actuator({infoBuildOptions: {clientId:config.TUNNEL_CLIENT_ID}}));
+app.use(actuator({infoBuildOptions: {clientId: config.TUNNEL_CLIENT_ID}}));
 
 app.get('/', (req, res, next) => {
     res.send('This is a proxy service for connecting to RPI terminal remotely powered by VYOM.cc');
@@ -109,13 +110,13 @@ app.post('/api/network_config', function (req, res) {
     console.log("RECEIVED REQUEST TO ADD NETOWRK CONFIG", req.body)
     var networkConfigs = req.body;
     let config = JSON.stringify(networkConfigs);
-    fs.writeFileSync(`${path.join(__dirname, '/network','/networkConfigs.json')}`, config);
+    fs.writeFileSync(`${path.join(__dirname, '/network', '/networkConfigs.json')}`, config);
     var dynamicController = require('./controllers/RuntimeController');
     dynamicController.init(app);
     res.status(200).send();
 });
 
-async function createTunnel(port, subdomain, host='https://localtunnel.vyom.cc'){
+async function createTunnel(port, subdomain, host = 'https://localtunnel.vyom.cc') {
     const tunnel = await localtunnel({
         port: port,
         host: host,
@@ -131,11 +132,9 @@ async function createTunnel(port, subdomain, host='https://localtunnel.vyom.cc')
         throw err;
     });
 
-    // tunnel.on('request', (info) => {
-    //     if (info.path !== '/cli/') {
-    //         console.log("Tunnel Request Received: ", info);
-    //     }
-    // })
+    tunnel.on('request', (info) => {
+        console.log("Tunnel Request Received: ", info);
+    })
 
     console.log('your url is: %s', tunnel.url);
     try {
