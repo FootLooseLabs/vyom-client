@@ -1,7 +1,6 @@
 import "dotenv/config.js";
 import config from "../configs/config";
 import fetch from "node-fetch";
-import dynamicController from "./controllers/RuntimeController";
 
 const path = require('path');
 const actuator = require('express-actuator');
@@ -22,7 +21,7 @@ const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
 const REQUEST_HANDLER_URL = config.REQUEST_HANDLER_URL
 let tunnel;
 let refreshIntervalId;
-app.use(bodyParser.urlencoded({extended: true}));
+//app.use(bodyParser.urlencoded({extended: true})); # NOTE: Not to use this as it will break the CLI requests
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use(cors({
