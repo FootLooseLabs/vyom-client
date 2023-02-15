@@ -7,7 +7,7 @@ global.component = require('./component/main');
 const eventHandlers = require("./interfaceEvents");
 
 var InterfaceSpecs = {
-    name: "@vyom/tunnel-client",
+    name: "@teleport/device-sdk",
     config: {
         port: 10015,
         lexicon: {},

@@ -257,7 +257,9 @@ app.__start__ = async (cb) => {
                 throw e;
             }
 
-            syncSystemInfoWithHost({tunnelUrl: tunnel.url, deviceStatus: 'online'})
+            console.debug("DEBUG: Created Tunnel - ", tunnel);
+
+            syncSystemInfoWithHost({clientId: tunnel.clientId, tunnelUrl: tunnel.url, deviceStatus: 'online'})
             
             var dynamicController = require('./controllers/RuntimeController');
             dynamicController.init(app);
