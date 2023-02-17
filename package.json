@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec babel-node ./src/interface.js",
-    "start": "NODE_ENV=development pm2 start ./src/interface.js --interpreter node_modules/@babel/node/bin/babel-node.js --name $npm_package_name",
+    "start": "NODE_ENV=production pm2 start ./src/interface.js --interpreter node_modules/@babel/node/bin/babel-node.js --name $npm_package_name",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
