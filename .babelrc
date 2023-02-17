@@ -5,6 +5,25 @@
             "transform-class-properties",
             { "spec": true },
             "@babel/plugin-proposal-class-properties"
-        ]
+        ],
+        [
+        	"module-resolver", 
+        	{
+		      "root": ["./src"],
+		      "alias": {
+		      		"@lexicon": "./src/lexicon",
+		      		"@seeds": "./src/seeds",
+			        "@config": "./src/config",
+			        "@utils": "./src/utils",
+
+			        "@seeder": "./src/component/seeder",
+			        "@processes": "./src/component/processes",
+			        "@operators": "./src/component/operators",
+			        "@middlewares": "./src/component/middlewares",
+			        "@models": "./src/component/models",
+			        "@DB": "./src/component/db.js"
+			    }
+		    }
+		]
     ]
 }

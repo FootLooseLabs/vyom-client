@@ -4,7 +4,8 @@ var devConfig = {
     TUNNEL_CLIENT_ID: process.env.CLIENT_ID,
     TERMINAL_SERVICE_URL: process.env.TERMINAL_SERVICE_URL,
     REQUEST_HANDLER_URL: process.env.REQUEST_HANDLER_URL,
-    SYNC_FREQUENCY: 10000
+    SYNC_FREQUENCY: 10000,
+    LOCAL_PORT: process.env.LOCAL_PORT || 3000
 }
 
 var prodConfig = {
@@ -13,7 +14,8 @@ var prodConfig = {
     TUNNEL_CLIENT_ID: process.env.CLIENT_ID,
     TERMINAL_SERVICE_URL: process.env.TERMINAL_SERVICE_URL,
     REQUEST_HANDLER_URL: process.env.REQUEST_HANDLER_URL,
-    SYNC_FREQUENCY: 10000
+    SYNC_FREQUENCY: 10000,
+    LOCAL_PORT: process.env.LOCAL_PORT || 3000
 }
 
 var config = process.env.NODE_ENV === 'development' ? devConfig : prodConfig

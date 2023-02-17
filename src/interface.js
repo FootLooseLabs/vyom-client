@@ -3,7 +3,6 @@ const lexicon = require("./lexicon/requests");
 
 global.component = require('./component/main');
 
-// component.__start__();
 const eventHandlers = require("./interfaceEvents");
 
 var InterfaceSpecs = {
@@ -13,7 +12,8 @@ var InterfaceSpecs = {
         lexicon: {},
         connections: {},
         eventHandlers: {}
-    }
+    },
+    eventHandlers: {}
 }
 
 var _interface = new Atom.Interface(InterfaceSpecs); //interface is a reserved word in js
