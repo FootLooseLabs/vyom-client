@@ -2,7 +2,7 @@ import "dotenv/config.js";
 import config from "@config";
 
 import NetworkManager from "@operators/network-manager";
-import { logTelemetryPeriodically } from "@processes/sync-telemetry";
+import { logTelemetryPeriodically } from "@processes/log-telemetry";
 import { startTunnel } from "@processes/start-tunnel";
 
 const Component = {};
