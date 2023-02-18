@@ -1,11 +1,7 @@
 const localtunnel = require('localtunnel');
 import  config from "@config";
 
-
 const TUNNEL_HOST = config.TUNNEL_HOST;
-const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
-const REQUEST_HANDLER_URL = config.REQUEST_HANDLER_URL
-
 
 global.tunnelProcess = false;
 

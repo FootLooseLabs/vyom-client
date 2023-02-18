@@ -5,6 +5,8 @@ global.component = require('./component/main');
 
 const eventHandlers = require("./interfaceEvents");
 
+const interfaceHttp = require("./interfaceHttp");
+
 var InterfaceSpecs = {
     name: "@teleport/device-sdk",
     config: {
@@ -19,6 +21,14 @@ var InterfaceSpecs = {
 var _interface = new Atom.Interface(InterfaceSpecs); //interface is a reserved word in js
 
 _interface.advertiseAndActivate();
+
+
+component.on("network-config-updated", async (networkConfigUpdateEv) => {
+    if(!networkConfigUpdateEv.apply){return;}
+    interfaceHttp.addNewRoutes(networkConfigUpdateEv.routes);
+});
+
+interfaceHttp.start();
 
 /**
 Content-Type: multipart/mixed; boundary="//"

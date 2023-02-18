@@ -4,8 +4,11 @@ import config from "@config";
 import NetworkManager from "@operators/network-manager";
 import { logTelemetryPeriodically } from "@processes/log-telemetry";
 import { startTunnel } from "@processes/start-tunnel";
+import { addOrUpdateNetworkConfig } from "@processes/manage-network";
 
 const Component = {};
+
+Component.addOrUpdateNetworkConfig = addOrUpdateNetworkConfig;
 
 Component.initLifecycle = function () {
     NetworkManager.applyConfig();

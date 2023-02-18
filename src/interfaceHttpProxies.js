@@ -1,11 +1,13 @@
+const config = require("@config");
+
 const {createProxyMiddleware} = require('http-proxy-middleware');
 
-const TERMINAL_SERVICE_URL = config.TERMINAL_SERVICE_URL;
-const REQUEST_HANDLER_URL = config.REQUEST_HANDLER_URL
+const TERMINAL_ENDPOINT = config.TERMINAL_ENDPOINT;
+const WEBREQUEST_HANDLER_ENDPOINT = config.WEBREQUEST_HANDLER_ENDPOINT
 
 function proxyCli () {
     return createProxyMiddleware({
-        target: TERMINAL_SERVICE_URL,
+        target: TERMINAL_ENDPOINT,
         changeOrigin: true,
         pathRewrite: {
             [`^/cli`]: '',
@@ -17,7 +19,7 @@ function proxyCli () {
 
 function proxyWsCredientialsRequest () {
     return createProxyMiddleware({
-        target: REQUEST_HANDLER_URL,
+        target: WEBREQUEST_HANDLER_ENDPOINT,
         changeOrigin: true,
         pathRewrite: {
             [`^/request_credentials`]: '/generateToken',
@@ -57,7 +59,7 @@ function proxyWsCredientialsRequest () {
 
 function proxyWs () {
     return createProxyMiddleware({
-        target: `${config.REQUEST_HANDLER_URL}`,
+        target: `${config.WEBREQUEST_HANDLER_ENDPOINT}`,
         changeOrigin: true,
         secure: false,
         ws: true,

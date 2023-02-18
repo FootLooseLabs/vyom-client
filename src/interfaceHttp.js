@@ -59,13 +59,6 @@ app.use('/web_socket/:client_id', proxyWs);
 
 app.use('/api', apiRoutes);
 
-
-component.on("network-config-updated", async (networkConfigUpdateEv) => {
-    if(!networkConfigUpdateEv.apply){return;}
-    app.addNewRoutes(networkConfigUpdateEv.routes);
-});
-
-
 app.start = async (cb) => {
     try {
         // this will attempt to kill any existing procrss using the port ${POST} 
@@ -83,7 +76,7 @@ app.start = async (cb) => {
 
     console.log(`DEBUG: @Teleport/device-sdk:::HttpInterface Listening at ${HOST}:${PORT}`);
 
-    server.on('upgrade', wsProxy.upgrade);
+    server.on('upgrade', proxyWs);
 }
 
 module.exports = app;
