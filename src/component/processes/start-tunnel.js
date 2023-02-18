@@ -15,7 +15,7 @@ function startTunnel(port, subdomain, host=TUNNEL_HOST, _timeout=5000) {
     return new Promise(async (resolve, reject)=>{
         try{
             setTimeout(() => {
-              return reject(Error(`ERROR: Tunnel Creation timed out after %{_timeout/1000}s.`))
+              return reject(Error(`ERROR: Tunnel Creation timed out after ${_timeout/1000}s.`))
             }, _timeout);
 
             tunnelProcess = await localtunnel({
@@ -36,6 +36,11 @@ function startTunnel(port, subdomain, host=TUNNEL_HOST, _timeout=5000) {
         tunnelProcess.on('request', (info) => {
             console.log("Tunnel Request Received: ", info);
             component.emit("tunnel-request", info);
+        })
+
+        tunnelProcess.on('close', (ev) => {
+            console.log("Tunnel Closed: ", ev);
+            component.emit("tunnel-closed", ev);
         })
 
         /**

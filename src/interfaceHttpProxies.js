@@ -10,7 +10,7 @@ function proxyCli () {
         pathRewrite: {
             [`^/cli`]: '',
         },
-        secure: false
+        secure: true
     })
 }
 
