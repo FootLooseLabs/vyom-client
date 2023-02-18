@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 const {proxyCli, proxyWsCredientialsRequest, proxyWs} = require('./interfaceHttpProxies');
 const apiRoutes = require('./interfaceHttpRoutes');
 
-const config = require("@config");
+import config from "@config";
 
 // Configuration
 const PORT = 3000;

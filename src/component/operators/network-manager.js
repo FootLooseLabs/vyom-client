@@ -1,8 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const {createProxyMiddleware} = require("http-proxy-middleware");
-import  config from "@config";
-
 
 const NETWORK_CONFIG_JSON_PATH = `${path.join(__dirname, '..', 'models', 'networkConfigs.json')}`;
 
