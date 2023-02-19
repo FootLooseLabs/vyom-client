@@ -4,6 +4,7 @@ const kill = require("kill-port");
 var express = require('express');
 let app = express();
 var bodyParser = require('body-parser');
+const {createProxyMiddleware} = require('http-proxy-middleware');
 
 
 const {proxyCli, proxyWsCredientialsRequest, proxyWs} = require('./interfaceHttpProxies');
@@ -48,14 +49,14 @@ app.addNewRoutes = (_routeList) => {
 }
 
 app.get('/', (req, res, next) => {
-    res.send('<@Teleport/device-sdk:::HttpInterface>');
+    res.send(`<@Teleport/device-sdk:::HttpInterface>|||${process.env.DEVICE_NAME}`);
 });
 
-app.use('/cli', proxyCli);
+app.use('/cli', proxyCli());
 
-app.use('/request_credentials', proxyWsCredientialsRequest);
+app.use('/request_credentials', proxyWsCredientialsRequest());
 
-app.use('/web_socket/:client_id', proxyWs);
+app.use('/web_socket/:client_id', proxyWs());
 
 app.use('/api', apiRoutes);
 

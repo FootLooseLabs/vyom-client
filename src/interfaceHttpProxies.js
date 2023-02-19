@@ -6,16 +6,16 @@ const TERMINAL_ENDPOINT = config.TERMINAL_ENDPOINT;
 const WEBREQUEST_HANDLER_ENDPOINT = config.WEBREQUEST_HANDLER_ENDPOINT
 
 function proxyCli () {
+    console.debug("DBEUG: Proxying Cli - ", TERMINAL_ENDPOINT);
     return createProxyMiddleware({
         target: TERMINAL_ENDPOINT,
-        changeOrigin: true,
+        changeOrigin: false,
         pathRewrite: {
             [`^/cli`]: '',
         },
-        secure: true
+        secure: false
     })
 }
-
 
 function proxyWsCredientialsRequest () {
     return createProxyMiddleware({
