@@ -10,7 +10,7 @@ var devConfig = {
 
 var prodConfig = {
     PLATFORM_BACKEND_URL: "https://teleport.vyom.cc/",
-    TUNNEL_HOST: "https://localtunnel.vyom.cc",
+    TUNNEL_HOST: "https://teleportgateway.vyom.cc",
     TUNNEL_CLIENT_ID: process.env.CLIENT_ID,
     TERMINAL_ENDPOINT: process.env.TERMINAL_SERVICE_URL,
     WEBREQUEST_HANDLER_ENDPOINT: process.env.REQUEST_HANDLER_URL,

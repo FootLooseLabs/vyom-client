@@ -7,8 +7,12 @@ const eventHandlers = require("./interfaceEvents");
 
 const interfaceHttp = require("./interfaceHttp");
 
+const INTERFACE_NAME = "@teleport/device-sdk";
+
+process.title = INTERFACE_NAME;
+
 var InterfaceSpecs = {
-    name: "@teleport/device-sdk",
+    name: INTERFACE_NAME,
     config: {
         port: 10015,
         lexicon: {},
